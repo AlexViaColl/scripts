@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# This script displays the current datetime for Vancouver and Barcelona
+
+printf "%s - Vancouver\n" "$(date '+%Y-%m-%d %H:%M:%S %Z')"; printf "%s - Barcelona\n" "$(TZ="Europe/Madrid" date '+%Y-%m-%d %H:%M:%S %Z')"

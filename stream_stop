@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+pkill ffmpeg
+pkill mpv

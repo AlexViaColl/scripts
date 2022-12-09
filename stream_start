@@ -1,0 +1,47 @@
+#!/usr/bin/bash
+
+
+#STREAM_KEY_TEST="$STREAM_KEY?bandwidthtest=true"
+#STREAM_SERVER=sea.contribute.live-video.net
+VOD_PATH="$HOME/vods/$(date +%Y-%m-%d_%H%M%S).mp4"
+
+# Webcam using mpv
+#mpv --demuxer-lavf-o=video_size=1280x720,input_format=mjpeg av://v4l2:/dev/video0 \
+#    `#--vo=caca` \
+#    --profile=low-latency \
+#    --geometry=30%+1344+726 \
+#    --no-border \
+#    --no-osc &>/dev/null &
+
+#sleep 1
+
+# Stream to Twitch
+#ffmpeg -y \
+#    -video_size 1920x1080 \
+#    -framerate 25 \
+#    -probesize 42M \
+#    -f x11grab -i :0.0+0,0 \
+#    -f pulse -i default \
+#    -preset ultrafast \
+#    -b:v 4500k \
+#    -b:a 128k \
+#    -c:v libx264 \
+#    -c:a aac \
+#    -f flv "rtmp://$STREAM_SERVER/app/$STREAM_KEY"
+
+# Stream to Twitch and store VOD locally
+ffmpeg -y \
+    -video_size 1920x1080 \
+    -framerate 25 \
+    -probesize 42M \
+    -f x11grab -i :0.0+0,0 \
+    -f pulse -i default \
+    -preset ultrafast \
+    -b:v 4500k \
+    -b:a 128k \
+    -c:v libx264 \
+    -c:a aac \
+    -map 0 -map 1 \
+    -flags +global_header \
+    -f tee \
+    "$VOD_PATH|[f=flv]rtmp://$STREAM_SERVER/app/$STREAM_KEY" &>/dev/null &
