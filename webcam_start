@@ -1,0 +1,12 @@
+#!/bin/bash
+
+mpv --demuxer-lavf-o=video_size=1280x720,input_format=mjpeg av://v4l2:/dev/video0 \
+    `#--vo=caca` \
+    --profile=low-latency \
+    --geometry=30%+1344+726 \
+    --no-border \
+    `#--no-window-dragging` \
+    --no-input-default-bindings \
+    --no-input-builtin-bindings \
+    `#--input-ipc-server=/tmp/mpvsocket` \
+    --no-osc &>/dev/null &
