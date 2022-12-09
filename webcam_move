@@ -1,0 +1,19 @@
+#!/bin/bash
+
+WID_AND_GEOM=$(wmctrl -lG | grep mpv | tr -s ' ' | cut -d ' ' -f1-6)
+WID=$(echo $WID_AND_GEOM | cut -d ' ' -f1)
+X=$(echo $WID_AND_GEOM | cut -d ' ' -f3)
+Y=$(echo $WID_AND_GEOM | cut -d ' ' -f4)
+W=$(echo $WID_AND_GEOM | cut -d ' ' -f5)
+H=$(echo $WID_AND_GEOM | cut -d ' ' -f6)
+
+#W=576 # 30% of 1920
+#H=324
+
+case "$1" in
+    h) X=0;;
+    l) X=1344;;
+    j) Y=726;;
+    k) Y=0;;
+esac
+wmctrl -i -r $WID -e 0,$X,$Y,$W,$H
