@@ -1,3 +1,6 @@
 #!/usr/bin/bash
 
-pkill mpv
+PID=$(wmctrl -lpx | grep "mpv - webcam" | tr -s ' ' | cut -d ' ' -f3)
+kill -INT $PID
+
+# pkill mpv

@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/bash
 
-WID_AND_GEOM=$(wmctrl -lG | grep mpv | tr -s ' ' | cut -d ' ' -f1-6)
+WID_AND_GEOM=$(wmctrl -lxG | grep "mpv - webcam" | tr -s ' ' | cut -d ' ' -f1-6)
 WID=$(echo $WID_AND_GEOM | cut -d ' ' -f1)
 X=$(echo $WID_AND_GEOM | cut -d ' ' -f3)
 Y=$(echo $WID_AND_GEOM | cut -d ' ' -f4)

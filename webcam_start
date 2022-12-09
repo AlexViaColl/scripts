@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 mpv --demuxer-lavf-o=video_size=1280x720,input_format=mjpeg av://v4l2:/dev/video0 \
+    --name="mpv - webcam" \
     `#--vo=caca` \
     --profile=low-latency \
     --geometry=30%+1344+726 \
