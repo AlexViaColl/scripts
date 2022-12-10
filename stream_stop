@@ -1,4 +1,4 @@
 #!/usr/bin/bash
 
-pkill ffmpeg
-pkill mpv
+echo -n 'q' >/tmp/ffmpeg.in
+rm -fr /tmp/ffmpeg.pid
