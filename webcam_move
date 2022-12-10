@@ -11,9 +11,15 @@ H=$(echo $WID_AND_GEOM | cut -d ' ' -f6)
 #H=324
 
 case "$1" in
-    h) X=0;;
-    l) X=1344;;
-    j) Y=726;;
-    k) Y=0;;
+    h)  X=0;;
+    l)  X=1344;;
+    j)  Y=726;;
+    k)  Y=0;;
+    f)  X=0;Y=0;
+    if [ "$W" = 1920 ] ; then
+        W=576;H=324;
+    else
+        W=1920;H=1080;
+    fi;;
 esac
 wmctrl -i -r $WID -e 0,$X,$Y,$W,$H
