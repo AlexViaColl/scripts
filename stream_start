@@ -1,47 +1,47 @@
 #!/usr/bin/bash
 
+. ~/.env # source file containing STREAM_KEY
 
-#STREAM_KEY_TEST="$STREAM_KEY?bandwidthtest=true"
-#STREAM_SERVER=sea.contribute.live-video.net
-VOD_PATH="$HOME/vods/$(date +%Y-%m-%d_%H%M%S).mp4"
+FFMPEG=/home/alex/bin/ffmpeg_patched
+STREAM_KEY_TEST="$STREAM_KEY?bandwidthtest=true"
+STREAM_SERVER=rtmp://sea.contribute.live-video.net
+VOD_PATH="$HOME/vods/$(date +%Y-%m-%d_%H%M%S).mkv"
 
 # Webcam using mpv
-#mpv --demuxer-lavf-o=video_size=1280x720,input_format=mjpeg av://v4l2:/dev/video0 \
-#    `#--vo=caca` \
-#    --profile=low-latency \
-#    --geometry=30%+1344+726 \
-#    --no-border \
-#    --no-osc &>/dev/null &
+#webcam_start
 
-#sleep 1
+echo -n '' >/tmp/ffmpeg.in # This file serves as stdin for ffmpeg. Write 'q' to stop recording.
 
-# Stream to Twitch
-#ffmpeg -y \
-#    -video_size 1920x1080 \
-#    -framerate 25 \
-#    -probesize 42M \
-#    -f x11grab -i :0.0+0,0 \
-#    -f pulse -i default \
-#    -preset ultrafast \
-#    -b:v 4500k \
-#    -b:a 128k \
-#    -c:v libx264 \
-#    -c:a aac \
-#    -f flv "rtmp://$STREAM_SERVER/app/$STREAM_KEY"
+# Select Sink
+SINK="$1"
+if [ $# -eq 0 ] ; then
+    SINK="vod"
+fi
 
-# Stream to Twitch and store VOD locally
-ffmpeg -y \
+case "$SINK" in
+    vod)    echo -n "$VOD_PATH" > ~/stream_key.txt;;
+    twitch) echo -n "[f=flv]$STREAM_SERVER/app/$STREAM_KEY" > ~/stream_key.txt;;
+    all)    echo -n "$VOD_PATH|[f=flv]$STREAM_SERVER/app/$STREAM_KEY" > ~/stream_key.txt;;
+esac
+
+$FFMPEG -y \
+    -hide_banner \
+    -loglevel error \
     -video_size 1920x1080 \
     -framerate 25 \
     -probesize 42M \
     -f x11grab -i :0.0+0,0 \
     -f pulse -i default \
     -preset ultrafast \
+    `#-vf "gblur=10"` \
     -b:v 4500k \
     -b:a 128k \
     -c:v libx264 \
     -c:a aac \
     -map 0 -map 1 \
     -flags +global_header \
-    -f tee \
-    "$VOD_PATH|[f=flv]rtmp://$STREAM_SERVER/app/$STREAM_KEY" &>/dev/null &
+    -f tee ~/stream_key.txt </tmp/ffmpeg.in &>/home/alex/vods/log &
+pidof $FFMPEG > /tmp/ffmpeg.pid # To display "RECORDING" in i3status
+
+# For quitting
+#echo q >/tmp/ffmpeg.in
